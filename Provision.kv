@@ -1,0 +1,59 @@
+#: import main main
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+ProvisionRoot:
+
+<ProvisionRoot>:
+	GetOrg
+
+
+	
+<OrgButton>:
+	on_press: app.root.show_current_org(self.text)
+
+<GetOrg>:
+	orientation: "vertical"
+	search_input: search_box
+	search_results: search_results_list
+	BoxLayout:
+		height: "40dp"
+		size_hint_y: None
+		TextInput:
+			id: search_box
+			size_hint_x: 50
+		Button:
+			text: "Get Org"
+			size_hint_x: 25
+			on_press: root.get_org()
+		Button:
+			size_hint_x: 25
+			text: "For Future Use"
+	ListView:
+		id: search_results_list
+		adapter:
+			ListAdapter(data=[], cls=main.OrgButton)
+
+<show_current_org@BoxLayout>:
+	org: ""
+	conditional: None
+	orientation: "vertical"
+	inventories: inventory
+	Label:
+		text: "Org Menu"
+	BoxLayout:
+		orientation: "vertical"
+		size_hint_y: None
+		Button:
+			height:"50dp"
+			text: "Inventory"
+			on_press: app.get_inventory()
+		Button:
+			height:"50dp"
+			text: "Claim a Device"
+		Button:
+			text: "Exit Current Org"
+			on_press: app.root.show_GetOrg()
+	ListView:
+		id: inventory
+		item_strings: []

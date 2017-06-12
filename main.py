@@ -22,7 +22,7 @@ class GetOrg(BoxLayout):
 
 		headers = {
     		'content-type': "application/json",
-    		'x-cisco-meraki-api-key': "YOUR API KEY",
+    		'x-cisco-meraki-api-key': "XXX", # <--- YOUR API KEY
     		'cache-control': "no-cache",
     		}
 
@@ -31,47 +31,55 @@ class GetOrg(BoxLayout):
 		
 	def found_org(self, search_response, org_file):
 		org_file = search_response.json()
+		print (org_file)
 		output_org = ['Organization:  {}   ID:  {}' .format(d['name'], d['id']) for d in org_file]
-		self.search_results.item_strings = org_file
+		#self.search_results.item_strings = org_file
 		self.search_results.adapter.data.clear()
 		self.search_results.adapter.data.extend(output_org)
 		self.search_results._trigger_reset_populate()
 		
-#class Current_Org(BoxLayout):
 
 class ProvisionRoot(BoxLayout):
 	
-	inventory = ObjectProperty()
-
 	def show_current_org(self, org):
-		self.clear_widgets()
-		current_org = Factory.show_current_org()
-		current_org.org = org
-		self.add_widget(current_org)
-		org_id= current_org.org
-		org_id=org_id.split(':  ')
-		org_id2=org_id[-1]
-		request = self.get_inventory(org_id2)
-		
-	
-	def get_inventory(self, org_id2):
-		inventory_file={}
-		url = "https://dashboard.meraki.com/api/v0/organizations/" +str(org_id2) +" /inventory"
+		org_id=org.split(':  ')[-1]
+		url = "https://dashboard.meraki.com/api/v0/organizations/" +str(org_id) +"/inventory"
+		print (url)
 		headers = {
-    	'content-type': "application/json",
-    	'x-cisco-meraki-api-key': "YOUR API KEY",
-    	'cache-control': "no-cache",
-    	}
-		inventory_search = requests.request("GET", url, headers=headers)
+    		'content-type': "application/json",
+    		'x-cisco-meraki-api-key': "XXX",   # <---- YOUR API Key
+    		'cache-control': "no-cache",
+    		}
+		print (headers)
+		search_response = requests.request("GET", url, headers=headers)
+		inventory_file = search_response.json()
+		print (inventory_file)
+		output_inventory = ['Model: {}  Mac_Addr: {} Serial: {}' .format(d['model'], d['mac'], d['serial'])for d in inventory_file]
+		print (output_inventory)
+		self.clear_widgets()
+		current_inventory = Factory.show_current_org()
+		current_inventory.inventory = output_inventory
+		current_inventory.org_id = org_id
+		self.add_widget(current_inventory)
+		#url = "https://dashboard.meraki.com/api/v0/organizations/" +str(org_id) +" /inventory"
+		#headers = {
+    	#'content-type': "application/json",
+    	#'x-cisco-meraki-api-key': "76a12666b76d53001946f650892eef8a0ffbf6de",
+    	#'cache-control': "no-cache",
+    	#}
+		#inventory_search = requests.request("GET", url, headers=headers)
 		#request=self.found_inventory(inventory_search, inventory_file)
 		
-	#def found_inventory(self, inventory_search, inventory_file):
-		inventory_file = inventory_search.json()
-		inventory_output = ['Model: {}  Mac_Addr: {} Serial: {}' .format(d['model'], d['mac'], d['serial'])for d in inventory_file]
-		#self.inventory.item_strings = org_id2
-		print(inventory_output)
+	def claimDev(self, serial, org_id):
+		url = "https://dashboard.meraki.com/api/v0/organizations/" +str(org_id) + "/claim"
+		device = {}
+		headers = {'content-type': "application/json",'x-cisco-meraki-api-key': "XXX",'cache-control': "no-cache"} # <--- YOUR API KEY
+		device['serial'] = format(str(serial))
+		print (device)
+		sepp=json.dumps(device)
+		newdevice=requests.post(url, data = sepp, headers=headers)
+		print (newdevice)
 		
-	
 	def show_GetOrg(self):
 		self.clear_widgets()
 		self.add_widget(GetOrg())
@@ -83,6 +91,3 @@ class Provision(App):
 
 if __name__ == '__main__':
 	Provision() .run()
-
-
- 

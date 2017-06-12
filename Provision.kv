@@ -14,7 +14,6 @@ ProvisionRoot:
 
 <GetOrg>:
 	orientation: "vertical"
-	search_input: search_box
 	search_results: search_results_list
 	BoxLayout:
 		height: "40dp"
@@ -25,7 +24,7 @@ ProvisionRoot:
 		Button:
 			text: "Get Org"
 			size_hint_x: 25
-			on_press: root.get_org()
+			on_release: root.get_org()
 		Button:
 			size_hint_x: 25
 			text: "For Future Use"
@@ -35,25 +34,36 @@ ProvisionRoot:
 			ListAdapter(data=[], cls=main.OrgButton)
 
 <show_current_org@BoxLayout>:
-	org: ""
-	conditional: None
+	inventory:[]
+	org_id:""
 	orientation: "vertical"
-	inventories: inventory
 	Label:
 		text: "Org Menu"
+		size_hint_y:0.1
 	BoxLayout:
 		orientation: "vertical"
-		size_hint_y: None
+		size_hint_y: 0.5
 		Button:
-			height:"50dp"
+			height:"25dp"
+			background_color: (0.7,0.7,0,1) if self.state == 'normal' else (0,1,0,1)
+			background_normal: ""
 			text: "Inventory"
-			on_press: app.get_inventory()
+			on_release: app.root.show_current_org(root.org_id)
 		Button:
-			height:"50dp"
-			text: "Claim a Device"
+			height:"25dp"
+			background_color: (0.7,0.7,0,1) if self.state == 'normal' else (0,1,0,1)
+			background_normal: ""
+			text: "Claim a Device (enter Serial in Text-Field below)"
+			on_release: app.root.claimDev(claimdev.text, root.org_id)
+		TextInput:
+			size_hint_y: 0.5
+			id: claimdev
 		Button:
 			text: "Exit Current Org"
-			on_press: app.root.show_GetOrg()
+			background_color: (0.7,0.7,0,1) if self.state == 'normal' else (0,1,0,1)
+			background_normal: ""
+			on_release: app.root.show_GetOrg()
 	ListView:
-		id: inventory
-		item_strings: []
+		id: inventory_list
+		adapter:
+			ListAdapter(data=root.inventory,cls=main.OrgButton)

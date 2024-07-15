@@ -64,7 +64,7 @@ class ProvisionRoot(BoxLayout):
 		#url = "https://dashboard.meraki.com/api/v0/organizations/" +str(org_id) +" /inventory"
 		#headers = {
     	#'content-type': "application/json",
-    	#'x-cisco-meraki-api-key': "76a12666b76d53001946f650892eef8a0ffbf6de",
+    	#'x-cisco-meraki-api-key': "XXX",
     	#'cache-control': "no-cache",
     	#}
 		#inventory_search = requests.request("GET", url, headers=headers)
